@@ -15,7 +15,10 @@ Para desplegar la aplicación realice los siguientes pasos:
 
 1. Cree un directorio donde desea descargar la app
 2. Ingrese al bach de git y clone el proyecto con el siguiente comando:
-   - git clone https://github.com/atovarCreangel/CurrencyConvert.git
+```bash
+git clone https://github.com/atovarCreangel/CurrencyConvert.git
+```
+
 3. Abra el proyecto con el editor de preferencia (En el ejemplo visualcode)
 4. Si es necesario agregue la dependecia gson-2.11.0.jar o ingrese al link maven <a href="https://repo1.maven.org/maven2/com/google/code/gson/gson/2.11.0/gson-2.11.0.jar">aquí</a> y descarguelo.
 5. Compile el proyecto y genere el jar de ejecución.
