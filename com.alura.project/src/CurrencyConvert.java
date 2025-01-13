@@ -3,7 +3,9 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.text.NumberFormat;
 import java.time.Duration;
+import java.util.Locale;
 import java.util.Scanner;
 
 import com.google.gson.JsonElement;
@@ -12,7 +14,9 @@ import com.google.gson.JsonParser;
 
 public class CurrencyConvert {
 
-    private static final String [] currencyCode = {"ARS", "BOB", "BRL", "COP", "USD"};
+    private static final String [] currencyCodeFront = {"ARS (Peso Argentino)", "BOB (Peso Boliviano)", "BRL (Real brasileño)", "CLP (Peso Chileno)", "COP (Peso Colombiano)", "EUR (Euro)", "MXN (Peso Mexicano)", "PYG (Guaraní Paraguayo)", "PEN (Sol Peruano)", "USD (Dólar estadounidense)", "UYU (Peso Uruguayo)", "VEF (Bolívar Venezolano)"};
+    private static final String [] currencyCode = {"ARS", "BOB", "BRL", "CLP", "COP", "EUR", "MXN", "PYG", "PEN", "USD", "UYU", "VEF"};
+
     private static int typeIn = 0;
     private  static int typeOut = 0;
 
@@ -31,8 +35,8 @@ public class CurrencyConvert {
 
         System.out.println("Por favor seleccione el tipo de moneda base...");
 
-        for (int i = 0; i < currencyCode.length; i++) {
-            System.out.println((i+1)+") " + currencyCode[i]);
+        for (int i = 0; i < currencyCodeFront.length; i++) {
+            System.out.println((i+1)+") " + currencyCodeFront[i]);
         }
 
         if(s.hasNextInt()){
@@ -61,8 +65,8 @@ public class CurrencyConvert {
 
         System.out.println("Por favor seleccione el tipo de moneda al que desea convertir...");
 
-        for (int i = 0; i < currencyCode.length; i++) {
-            System.out.println((i+1)+") " + currencyCode[i]);
+        for (int i = 0; i < currencyCodeFront.length; i++) {
+            System.out.println((i+1)+") " + currencyCodeFront[i]);
         }
 
         if(s.hasNextInt()){
@@ -79,11 +83,16 @@ public class CurrencyConvert {
         }
 
         double resp = sendCurrencyConvertApi(currencyCode[(typeIn-1)], currencyCode[(typeOut-1)]);
+        resp = resp * valor;
+        Locale locale = getLocale(currencyCode[(typeOut-1)]);   
+        NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(locale);
 
-        System.out.println("La conversión del valor es: " + resp + " " + currencyCode[(typeOut-1)]);
+        System.out.println("La conversión del valor es: " + currencyFormatter.format(resp) + " " + currencyCodeFront[(typeOut-1)]);
+
+        s.close();
     }
 
-    public static boolean validateEntry(int entry){
+    private static boolean validateEntry(int entry){
         boolean isValid = false;
         if(entry <= currencyCode.length){
             isValid = true;
@@ -98,9 +107,9 @@ public class CurrencyConvert {
         return isValid;
     }
 
-    public static double sendCurrencyConvertApi(String currCodeIn, String currCodeOut){
-        System.out.println("currCodeIn = " + currCodeIn);
-        System.out.println("currCodeOut = " + currCodeOut);
+    private static double sendCurrencyConvertApi(String currCodeIn, String currCodeOut){
+        //System.out.println("currCodeIn = " + currCodeIn);
+        //System.out.println("currCodeOut = " + currCodeOut);
         double convert = 0.0;
         try {
             String api_key = "f4107fc3ba4b4e8ced63d444";
@@ -122,7 +131,7 @@ public class CurrencyConvert {
                 JsonObject jobject = jelement.getAsJsonObject();
                 if(!jobject.isJsonNull()){
                     if(jobject.get("result").getAsString().equals("success")){
-                        System.out.println("Success");
+                        //System.out.println("Success");
                         JsonObject objRates = jobject.get("conversion_rates").getAsJsonObject();
                         convert = objRates.get(currCodeOut).getAsDouble();
                     }
@@ -132,5 +141,16 @@ public class CurrencyConvert {
             System.out.println("Error: " + ex.getMessage());
         }
         return convert;
+    }
+
+    private static Locale getLocale(String strCode) {
+     
+        for (Locale locale : NumberFormat.getAvailableLocales()) {
+            String code = NumberFormat.getCurrencyInstance(locale).getCurrency().getCurrencyCode();
+            if (strCode.equals(code)) {
+                return locale;
+            }
+        }  
+        return null;
     }
 }
