@@ -1,4 +1,4 @@
-<h2 align="center"> ______ CONVERSOR DE MONEDA ANDREW ALURA _______</h2>
+<h2 align="center"> ______ CONVERSOR DE MONEDA (ALURA) _______</h2>
 
 
 ![pngtree-convert-curency-or-exchange-picture-image_8169863](https://github.com/user-attachments/assets/e7156570-184b-4b23-843c-e87958c745df)
